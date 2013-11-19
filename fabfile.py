@@ -114,7 +114,7 @@ def add_redis():
     
 def add_node():
   with cd("/server/src"):
-    sudo("wget http://nodejs.org/dist/v{}/node-v{}.tar.gz".format(VERSIONS['NODE']))
+    sudo("wget http://nodejs.org/dist/v{0}/node-v{0}.tar.gz".format(VERSIONS['NODE']))
     sudo("tar xfv node-v{}.tar.gz".format(VERSIONS['NODE']))
   with cd("/server/src/node-v{}".format(VERSIONS['NODE'])):
     sudo("./configure && make && make install")
