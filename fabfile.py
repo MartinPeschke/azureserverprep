@@ -111,15 +111,17 @@ def add_memcached():
 def add_redis():
   files.append("/etc/apt/sources.list",   "\n\n# /etc/apt/sources.list.d/dotdeb.org.list\ndeb http://packages.dotdeb.org squeeze all\ndeb-src http://packages.dotdeb.org squeeze all", use_sudo = True)
   sudo("apt-get update")
+  #TODO: Untrusted source breaks creation
   sudo("apt-get install -y {}".format('redis-server'))
     
 def add_node():
   with cd("/server/src"):
-    sudo("wget http://nodejs.org/dist/v{}/node-v{}.tar.gz".format(VERSIONS['NODE']))
+    sudo("wget http://nodejs.org/dist/v{0}/node-v{0}.tar.gz".format(VERSIONS['NODE']))
     sudo("tar xfv node-v{}.tar.gz".format(VERSIONS['NODE']))
   with cd("/server/src/node-v{}".format(VERSIONS['NODE'])):
     sudo("./configure && make && make install")
   with cd("/home/www-data"):
+	#TODO: It tries executing in home/azureuser and breaks
     sudo("npm install less", user = 'www-data')
     
 def add_init_script(name):
