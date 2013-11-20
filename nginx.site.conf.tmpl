@@ -1,0 +1,22 @@
+upstream ${projectname}_${env} {
+	%for port in ports:
+	server 127.0.0.1:${port};
+	%endfor
+}
+
+server {
+    listen  80;
+    set $base /server/www/${projectname}/${env}/code/current/${projectname};
+    location /favicon.ico {expires 30d;alias $base/static/img/favicon.ico;}
+    location /robots.txt {expires 30d; alias $base/static/robots.txt;}
+    location /static/ {expires 30d;alias $base/static/;}
+
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP  $remote_addr;
+
+    location / {
+        add_header "X-UA-Compatible" "IE=Edge,chrome=1";
+        proxy_set_header Host $host;
+        proxy_pass http://${projectname}_${env}/;
+    }
+}

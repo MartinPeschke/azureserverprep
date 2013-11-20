@@ -1,7 +1,8 @@
 from fabric.api import run, sudo
 from fabric.context_managers import cd
 from fabric.contrib import files
-from fabric.operations import put
+from fabric.operations import put, prompt
+from operator import methodcaller
 
 from mako.template import Template
 
@@ -127,6 +128,34 @@ def add_init_script(name):
   sudo("chmod +x /etc/init.de/super_{}".format(name))
   sudo("update-rc.d super_{} defaults".format(name))
     
+def add_nginx_domain_config():
+	domain = prompt("What domain you want to run this on?")
+	env = prompt("What environment is this? ( live )") or 'live'
+	projectname = prompt("What is your package name?")
+	port = prompt("Which ports are your servers running on? (comma separated: 6543, 6544, 6545)")
+	ports = map(methodcaller("strip"), port.split(","))
+	
+	cfg_template = Template(filename='nginx.site.conf.tmpl')
+	config = cfg_template.render(domain = domain, 
+						env=env,
+						ports=ports,
+						projectname=projectname
+						)
+	path = '/server/nginx/etc/sites.enabled/{}.{}.conf'.format(projectname,env)
+	
+	print 'This is the configuration:'.center(80, '-')
+	print config
+	print '-'*80
+	
+	confirm = prompt("Upload this file to ({}) ? (y/N)".format(path))
+	if confirm == 'Y':
+		files.put(path, config, escape=False, use_sudo = True)
+
+	confirm = prompt("Reload nginx? (y/N)")
+	if confirm == 'Y':
+		sudo("/etc/init.d/nginx reload")
+	
+	
 def setup():
     update()
     add_nginx()
