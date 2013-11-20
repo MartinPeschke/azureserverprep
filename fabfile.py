@@ -150,11 +150,11 @@ def add_nginx_domain_config():
 	print '-'*80
 	
 	confirm = prompt("Upload this file to ({}) ? (y/N)".format(path))
-	if confirm == 'Y':
-		files.put(path, config, escape=False, use_sudo = True)
+	if confirm == 'y':
+		files.append(path, config, use_sudo = True)
 
 	confirm = prompt("Reload nginx? (y/N)")
-	if confirm == 'Y':
+	if confirm == 'y':
 		sudo("/etc/init.d/nginx reload")
 	
 	
