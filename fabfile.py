@@ -121,13 +121,15 @@ def add_node():
   with cd("/server/src/node-v{}".format(VERSIONS['NODE'])):
     sudo("./configure && make && make install")
   with cd("/home/www-data"):
-	#TODO: It tries executing in home/azureuser and breaks
+    #TODO: It tries executing in home/azureuser and breaks
     sudo("npm install less", user = 'www-data')
     
-def add_init_script(name):
+def add_init_script():
+  name = prompt("What's your project name?")
+  env = prompt("What environment is this? ( live )") or 'live'
   cfg_template = Template(filename='super.initscript.mako')
-  files.put("/etc/init.d/super_{}".format(name), cfg_template.render(name = name), escape=False)
-  sudo("chmod +x /etc/init.de/super_{}".format(name))
+  files.append("/etc/init.d/super_{}".format(name), cfg_template.render(name = name, env=env), use_sudo = True)
+  sudo("chmod +x /etc/init.d/super_{}".format(name))
   sudo("update-rc.d super_{} defaults".format(name))
     
 def add_nginx_domain_config():

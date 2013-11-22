@@ -1,24 +1,21 @@
 #! /bin/sh
-
-NAME=${name}
-
 ### BEGIN INIT INFO
-# Provides:     $NAME-python-supervisor
+# Provides:     ${name}-python-supervisor
 # Required-Start:   $syslog
 # Required-Stop:    $syslog
 # Should-Start:     $local_fs
 # Should-Stop:      $local_fs
 # Default-Start:    2 3 4 5
 # Default-Stop:     0 1 6
-# Short-Description:    $NAME-python-supervisor
-# Description:      $NAME-python-supervisor
+# Short-Description:    ${name}-python-supervisor
+# Description:      ${name}-python-supervisor
 ### END INIT INFO
 #
 # Simple init.d script conceived to work on Linux systems
 # as it does use of the /proc filesystem.
 
-
-ENV=/server/www/$NAME/live
+NAME=${name}
+ENV=/server/www/$NAME/${env}
 USER=www-data
 PIDFILE=$ENV/run/supervisord.pid
 
@@ -30,7 +27,7 @@ case "$1" in
                 echo "$PIDFILE exists, process is already running or crashed"
         else
                 echo "Starting $NAME server..."
-                sudo -u $USER HOME=$(eval echo ~${USER}) $ENV/env/bin/supervisord -c $ENV/supervisor.cfg
+                sudo -u $USER HOME=$(eval echo ~$USER) $ENV/env/bin/supervisord -c $ENV/supervisor.cfg
         fi
         ;;
     stop)
@@ -40,7 +37,7 @@ case "$1" in
         else
                 echo "Stopping ..."
                 $ENV/env/bin/supervisorctl -c $ENV/supervisor.cfg shutdown
-                while [ -x /proc/${PIDFILE} ]
+                while [ -x /proc/$PIDFILE ]
                 do
                     echo "Waiting for python to shutdown ..."
                     sleep 1
