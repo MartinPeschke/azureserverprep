@@ -6,6 +6,7 @@ upstream ${projectname}_${env} {
 
 server {
     listen  80;
+    server_name ${domain};
     set $base /server/www/${projectname}/${env}/code/current/${projectname};
     location /favicon.ico {expires 30d;alias $base/static/img/favicon.ico;}
     location /robots.txt {expires 30d; alias $base/static/robots.txt;}
