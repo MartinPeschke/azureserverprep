@@ -28,7 +28,7 @@ SYSTEM_PACKAGES = ["sudo"
                   , "libtomcrypt-dev"
                   , "libssl-dev"
                   , "libevent-dev"
-                  , "git"]
+                  , "git", "curl"]
 
 VERSIONS = {
     "PYTHON":"2.7.5"
